@@ -2,31 +2,35 @@ use std::env;
 
 use macroquad::prelude::*;
 
+
+struct Vis {
+    pos: Vec2
+}
+
+struct Bar {
+    origin: Vec2,
+    rotation: f32
+}
+
+
 #[macroquad::main("Texture")]
 async fn main() {
 
-    for argument in env::args() {
-        println!("{}", argument);
-    }
+    // for argument in env::args() {
+    //     println!("{}", argument);
+    // }
 
-    let texture: Texture2D = match load_texture("assets/ferris.png").await {
-        Ok(texture) => texture,
-        Err(e) => {
-            let path = env::current_dir().unwrap();
-            eprintln!("The current directory is {}", path.display());
-            eprintln!("path: {}", e.path);
-            panic!("cant open texture")
-        }
+    let vis = Vis {
+        pos: Vec2::new(screen_width() / 2.,  screen_height() / 2.) 
     };
+
+
 
     loop {
         clear_background(LIGHTGRAY);
-        draw_texture(
-            texture,
-            screen_width() / 2. - texture.width() / 2.,
-            screen_height() / 2. - texture.height() / 2.,
-            WHITE,
-        );
+
+        draw_circle(vis.pos.x, vis.pos.y, 2., BLACK);
+
         next_frame().await
     }
 }
