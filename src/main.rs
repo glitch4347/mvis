@@ -4,6 +4,10 @@ use std::{env, ops::Mul};
 use macroquad::prelude::*;
 
 
+mod bar;
+use crate::bar::*;
+
+
 // TODO: moving wave 
 // TODO: curcles around
 
@@ -21,20 +25,16 @@ impl Vis {
         let radius = screen_width().min(screen_height()) / 3.;
 
         for i in 0..bars_count {
-            let length = 180. / bars_count as f32;
+            let length = 360. / bars_count as f32;
             let rotation = i as f32 * length;
             bars.push(Bar::new(pos, rotation.to_radians(), radius))
         }
-        Vis{
-            pos,
-            bars,
-            radius
-        }
+        Vis{ pos, bars, radius }
 
     }
 
     fn render(&self) {
-        draw_circle(self.pos.x, self.pos.y, 10., BLACK);
+        draw_circle(self.pos.x, self.pos.y, 10., GREEN);
         let mut pulse = 1.;
         for b in &self.bars {
             b.render(pulse);
@@ -43,29 +43,6 @@ impl Vis {
     }
 }
 
-struct Bar {
-    origin: Vec2,
-    rotation: f32,
-    radius: f32
-}
-
-impl Bar {
-    fn new(origin: Vec2, rotation: f32, radius: f32) -> Bar {
-        Bar { origin, rotation, radius }
-    }
-    fn render(&self, pulse: f32) {
-        let x0 = self.radius * self.rotation.cos() + self.origin.x;
-        let y0 = self.radius * self.rotation.sin() + self.origin.y;
-        draw_circle(x0, y0, 5., BLACK);
-
-        let x1 = x0 + self.rotation.cos() * pulse / 2.;
-        let y1 = y0 + self.rotation.sin() * pulse / 2.;
-        let x2 = x0 + self.rotation.cos() * -pulse / 2.;
-        let y2 = y0 + self.rotation.sin() * -pulse / 2.;
-
-        draw_line(x1, y1, x2, y2, 2., GREEN);
-    }
-}
 
 
 #[macroquad::main("Texture")]
@@ -79,7 +56,7 @@ async fn main() {
 
 
     loop {
-        clear_background(LIGHTGRAY);
+        clear_background(BLACK);
 
         vis.render();
 
